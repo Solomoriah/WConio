@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>WConio -- Windows CONsole I/O module for Python</title>
+<style type="text/css">
+<!--
+    body    { topmargin: 0;
+              font-family: Verdana,Arial,Helvetica; 
+            }
+    td.c4   { font-weight: bold;
+            }
+    span.c3 { font-size: 60%; }
+    span.h1 { font-size: 130%;
+              font-weight: bold;
+            }
+    span.h3 { font-size: 115%;
+              font-weight: bold;
+            }
+    h1      { font-size: 125%;
+              font-weight: bold;
+            }
+    a:link {
+        color: black;
+        text-decoration: underline;
+    }
+    a:visited {
+        color: black;
+        text-decoration: underline;
+    }
+    a:hover {
+        color: black;
+        text-decoration: underline;
+    }
+-->
+</style>
+</head>
+<body bgcolor=white>
+
+<h1>WConio -- Windows CONsole I/O module for Python</h1>
+
+Created 2/3/2001 by Chris Gonnerman
+<a href='mailto:chris.gonnerman@usa.net'>chris.gonnerman@usa.net</a></b><br>
+based on code by Daniel Guerrero Miralles<br>
+This source code is public domain.
+<p>
+This module is based heavily on the TCCONIO package; the notes
+from the top of the source are as follows:
+
+<blockquote>
+    Old Turbo-C CONIO.H compatibility library for LCC-Win32<br>
+    and GCC/EGCS Mingw32 compilers.<br>
+    Version 1.0 (September 1999).<br>
+    Created by Daniel Guerrero Miralles (daguer@geocities.com).<br>
+    This source code is public domain.<br>
+</blockquote>
+
+I see no reason to add my copyright to this code.  
+<p>
+NEITHER AUTHOR IS RESPONSIBLE FOR ANY PROBLEMS WITH THIS CODE.  
+DAMAGES OF ANY SORT ARE ENTIRELY THE RESPONSIBILITY OF THE USER.  
+USE OF THIS CODE INDICATES ACCEPTANCE OF THESE TERMS.
+
+<p>
+For more information, and/or to download my other software, visit my
+project homepage at:
+<blockquote>
+<a href='http://newcenturycomputers.net/projects'>
+http://newcenturycomputers.net/projects</a>
+</blockquote>
+
+<hr>
+
+<p>
+The conio.h functions of old Borland Turbo-C don't map perfectly to
+Python, so I have taken some liberties.  Also, Daniel did not 
+implement the window() functionality so neither have I.
+<p>
+Screen coordinates are based at 0, 0 (logical for Python, but counter
+to the tradition of conio.h).
+<p>
+Here is the synopsis:
+<p>
+<b>WConio.error</b> (aka _WConio.error) is thrown for exceptions special to 
+this module.
+<p>
+<b>WConio.cgets(length)</b> gets (and echos) a string up to length 
+characters long.  VERY MINIMAL editing is allowed (basically 
+backspace).
+<p>
+<b>WConio.clreol()</b> clears from the cursor position to the end of the 
+line.
+<p>
+<b>WConio.clrscr()</b> clears the screen and homes the cursor.
+<p>
+<b>WConio.cputs(string)</b> prints a string starting at the current cursor
+position.  Some control characters are handled, but unlike the
+traditional version '\n' doesn't drop a line in the same column,
+instead it acts like '\r\n'.
+<p>
+<b>WConio.delline()</b> remove a line at the current cursor position, 
+scrolling the lower part of the frame up.
+<p>
+<b>WConio.getch()</b> retrieves a keystroke from the console, returning a 
+tuple of (number, string) containing the numeric and character values 
+for the key hit.  getch() does not echo, and delays until a key is
+available.  If the key hit has no character representation a null
+string ('') is returned.  Note that special keys will arrive in two
+steps, either a null byte followed by a scancode or 0340 followed by
+a scan code for gray keys.
+<p>
+<b>WConio.getche()</b> works exactly like getch(), but if the key read is 
+printable it is echoed.
+<p>
+<b>WConio.getkey()</b> is my contribution... it always returns a single 
+string value, with special names for non-ascii keys.  Valid keynames
+are listed in WConio.py, so I won't repeat them here.
+<p>
+<b>WConio.gettext(left, top, right, bottom)</b> copies characters and 
+attributes from the screen coordinates given and returns them in a
+string buffer.  Usually used with puttext() below.
+<p>
+<b>WConio.gettextinfo()</b> returns a tuple of display information.  It 
+mirrors the info returned by the traditional version:
+<blockquote>
+    - left, top, right, bottom:  window coordinates<br>
+    - textattr, normattr: current attributes<br>
+    - videomode:  current video mode<br>
+    - height, width:  screen size<br>
+    - curx, cury:  current cursor position<br>
+</blockquote>
+
+Some information is faked.
+<p>
+<b>WConio.gotoxy(x, y)</b> positions the cursor at the given coordinates.
+<p>
+<b>WConio.highvideo()</b> activates bold (bright) video mode.
+<p>
+<b>WConio.insline()</b> inserts a blank line at the current position, 
+scrolling down the rest of the screen.
+<p>
+<b>WConio.kbhit()</b> returns true if a keystroke is in the buffer, false 
+otherwise.  If it returns true, getch()/getkey() won't block.
+<p>
+<b>WConio.lowvideo()</b> activates low intensity (dim) video mode.
+<p>
+<b>WConio.movetext(left, top, right, bottom, x, y)</b> moves the given text 
+region to the new x, y position.
+<p>
+<b>WConio.normvideo()</b> activates normal intensity video mode.  
+Fundamentally equal to lowvideo().
+<p>
+<b>WConio.putch(ch)</b> expects either a numeric or single-character string 
+and prints it at the current position.
+<p>
+<b>WConio.puttext(left, top, right, bottom, saved)</b> puts the given saved 
+text block on the screen at the given coordinates.  The left, top, 
+right, bottom coordinates should *probably* match the geometry of the 
+similar coordinates used in the gettext() call.
+<p>
+<b>WConio.setcursortype(n)</b> changes the appearance of the text-mode 
+cursor.  The values for n are 0 for no cursor, 1 for normal cursor,
+2 for block cursor.
+<p>
+<b>WConio.settitle(s)</b> sets the console title to the given string.  
+The string must not have any embedded null bytes.  
+(This is another of my contributions.)
+<p>
+<b>WConio.textattr(attr)</b> changes the text attribute (color) for new 
+text.  The data value is formatted with the foreground color in the 
+lower nibble, and the background color in the upper.  This differs 
+from the traditional version in that blinking is not available, but 
+high-intensity backgrounds are available.  See below for the color 
+constants.
+<p>
+<b>WConio.textbackground(color)</b> sets the background color without 
+changing the foreground.  See below for the color constants.
+<p>
+<b>WConio.textcolor(color)</b> sets the foreground color without changing 
+the background.  See below for the color constants.
+<p>
+<b>WConio.textmode()</b> resets default video mode, clears the screen, homes 
+the cursor, and puts the cursor shape back to normal.
+<p>
+<b>WConio.ungetch(ch)</b> pushes a keystroke back into the keyboard buffer.  
+ch may be either an integer value or one-character string.  Only one 
+byte can be pushed back this way; that means that special keys can't
+be pushed, since they involve a two-byte sequence.
+<p>
+<b>WConio.wherex()</b> returns the current cursor x position.
+<p>
+<b>WConio.wherey()</b> returns the current cursor y position.
+<p>
+<b>WConio.File</b> is a file-like object implementing both reading
+and writing to the console.  This is a handy shim when used with 
+"plumbers helper's" like NWayOutput.py and Logger.py; see my project
+home page to download these.
+<p>
+The WConio module also contains constants for colors, named in all-
+uppercase; review WConio.py for details.
+
+<hr>
+
+<h2>INSTALLATION</h2>
+
+Included is a binary for Python 2.0.  Place _WConio.pyd and WConio.py 
+in a directory in your Python path.
+<p>
+If you are running 1.5.2, you should be able to rebuild the library
+for that version.  Visit 
+<blockquote>
+    <a href='http://starship.python.net/crew/kernr/mingw32/Notes.html'>
+    http://starship.python.net/crew/kernr/mingw32/Notes.html</a>
+</blockquote>
+for more information on the subject.
+
+</body>
+</html>
+
+
