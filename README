@@ -140,17 +140,3 @@ WConio.wherey() returns the current cursor y position.
 The WConio module also contains constants for colors, named in all-
 uppercase; review WConio.py for details.
 
----------------------------------------------------------------------
-
-INSTALLATION
-
-Included is a binary for Python 2.0.  Place _WConio.pyd and WConio.py 
-in a directory in your Python path.
-
-If you are running 1.5.2, you should be able to rebuild the library
-for that version.  Visit 
-
-    http://starship.python.net/crew/kernr/mingw32/Notes.html
-
-for more information on the subject.
-
